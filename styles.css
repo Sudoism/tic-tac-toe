@@ -3,6 +3,9 @@
     height: 100px;
     border-width: 1px;
     border-style: solid;
+    text-align:center;
+    font-size: 85px;
+    font-family: monospace;
 }
 
 .column2 .square {
@@ -12,7 +15,6 @@
 
 #s0, #s1, #s2, #s3, #s4, #s5 {
     border-bottom: none;
-    
 }
 
 .board {
