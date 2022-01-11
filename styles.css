@@ -1,9 +1,14 @@
 .square {
     width:100px;
     height: 100px;
-    outline: 1px solid;
+    border-width: 1px;
+    border-style: solid;
 }
 
+.column2 .square {
+    border-right:none;
+    border-left:none;
+}
 
 .board {
     display:flex;
