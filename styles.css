@@ -10,6 +10,11 @@
     border-left:none;
 }
 
+#s0, #s1, #s2, #s3, #s4, #s5 {
+    border-bottom: none;
+    
+}
+
 .board {
     display:flex;
     justify-content: center;
