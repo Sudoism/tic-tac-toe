@@ -32,6 +32,18 @@ const gameBoard = (function() {
 })();
 
 //gameEngine module
+const gameEngine = (function() {
+
+    const squareClicked = (position) => {
+        console.log(position)
+    }
+    return {
+        squareClicked,
+    }
+
+
+})();
+
 
 //displayController module 
 const displayController = (function() {
@@ -46,6 +58,17 @@ const displayController = (function() {
     squares.push(document.querySelector("#s6"));
     squares.push(document.querySelector("#s7"));
     squares.push(document.querySelector("#s8"));
+
+    const instantiateDisplay = () => {
+        let board = gameBoard.getBoard();
+        for(let i = 0; i < board.length; i++) {
+            let square = squares[i]
+            let position = i;
+            square.addEventListener("click", ()=> {
+                gameEngine.squareClicked(position);
+            } )
+        }
+    }
     
     const updateDisplay = () => {
         let board = gameBoard.getBoard();
@@ -57,12 +80,12 @@ const displayController = (function() {
 
     return {
         updateDisplay,
-        squares,
+        instantiateDisplay
     }
 
 })();
 
 
 //instasiation of game
-computer = player("computer");
-player = player("player");
+player1 = player("player1");
+player2 = player("player2");
