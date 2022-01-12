@@ -43,12 +43,12 @@ const gameEngine = (function() {
             } else {
                 gameBoard.addMarker(position,"O")
             }
+            displayController.updateBoard();
             updateTurn();
             checkBoard();
         } else {
             return
         }
-        displayController.updateDisplay();
     }
 
     const checkBoard = () => {
@@ -77,10 +77,11 @@ const gameEngine = (function() {
 
     const endGame = () => {
         if(playerOneTurn) {
-            console.log("O won!")
+            displayController.updateResult("O Won!")
         } else {
-            console.log("X won!")
+            displayController.updateResult("X Won!")
         }
+        displayController.disableDisplay();
     }
 
     const updateTurn = () => {
@@ -108,7 +109,10 @@ const displayController = (function() {
     squares.push(document.querySelector("#s7"));
     squares.push(document.querySelector("#s8"));
 
-    const instantiateDisplay = () => {
+    const result = document.querySelector("#result");
+
+
+    const activateDisplay = () => {
         let board = gameBoard.getBoard();
         for(let i = 0; i < board.length; i++) {
             let square = squares[i]
@@ -116,10 +120,20 @@ const displayController = (function() {
             square.addEventListener("click", ()=> {
                 gameEngine.squareClicked(position);
             } )
+           //square.addEventListener("click", console.log("hi"), false)
+        }
+    }
+
+    const disableDisplay = () => {
+        let board = gameBoard.getBoard();
+        for(let i = 0; i < board.length; i++) {
+            let square = squares[i]
+            let position = i;
+            square.replaceWith(square.cloneNode(true));
         }
     }
     
-    const updateDisplay = () => {
+    const updateBoard = () => {
         let board = gameBoard.getBoard();
         for(let i = 0; i < board.length; i++) {
             let square = squares[i]
@@ -127,9 +141,15 @@ const displayController = (function() {
         }
     }
 
+    const updateResult = (resultInfo) => {
+        result.textContent = resultInfo;
+    }
+
     return {
-        updateDisplay,
-        instantiateDisplay
+        updateBoard,
+        updateResult,
+        activateDisplay,
+        disableDisplay
     }
 
 })();
@@ -138,4 +158,4 @@ const displayController = (function() {
 //instasiation of game
 player1 = player("player1");
 player2 = player("player2");
-displayController.instantiateDisplay();
+displayController.activateDisplay();

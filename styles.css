@@ -22,6 +22,6 @@
     justify-content: center;
 }
 
-h1 {
+h1, #result {
     text-align: center;
 }
