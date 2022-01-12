@@ -33,22 +33,64 @@ const gameBoard = (function() {
 
 //gameEngine module
 const gameEngine = (function() {
+    let playerOneTurn = true;
 
     const squareClicked = (position) => {
         let board = gameBoard.getBoard()
         if (board[position] === '') {
-            gameBoard.addMarker(position,"X")
+            if(playerOneTurn) {
+                gameBoard.addMarker(position,"X")
+            } else {
+                gameBoard.addMarker(position,"O")
+            }
+            updateTurn();
+            checkBoard();
         } else {
             return
         }
         displayController.updateDisplay();
     }
 
-    return {
-        squareClicked,
+    const checkBoard = () => {
+        let board = gameBoard.getBoard()
+        
+        if(board[0]===board[3] && board[3]===board[6] && board[6] === 'O' ||
+           board[0]===board[3] && board[3]===board[6] && board[6] === 'X' ||
+           board[1]===board[4] && board[4]===board[7] && board[7] === 'O' ||
+           board[1]===board[4] && board[4]===board[7] && board[7] === 'X' ||
+           board[2]===board[5] && board[5]===board[8] && board[8] === 'O' ||
+           board[2]===board[5] && board[5]===board[8] && board[8] === 'X' ||
+           board[0]===board[1] && board[1]===board[2] && board[2] === 'O' ||
+           board[0]===board[1] && board[1]===board[2] && board[2] === 'X' ||
+           board[3]===board[4] && board[4]===board[5] && board[5] === 'O' ||
+           board[3]===board[4] && board[4]===board[5] && board[5] === 'X' ||
+           board[6]===board[7] && board[7]===board[8] && board[8] === 'O' ||
+           board[6]===board[7] && board[7]===board[8] && board[8] === 'X' ||
+           board[0]===board[4] && board[4]===board[8] && board[8] === 'O' ||
+           board[0]===board[4] && board[4]===board[8] && board[8] === 'X' ||
+           board[2]===board[4] && board[4]===board[6] && board[6] === 'O' ||
+           board[2]===board[4] && board[4]===board[6] && board[6] === 'X' 
+            ) {
+            endGame()
+        }
     }
 
+    const endGame = () => {
+        if(playerOneTurn) {
+            console.log("O won!")
+        } else {
+            console.log("X won!")
+        }
+    }
 
+    const updateTurn = () => {
+        playerOneTurn = !playerOneTurn;
+    }
+
+    return {
+        squareClicked,
+        checkBoard,
+    }
 })();
 
 
