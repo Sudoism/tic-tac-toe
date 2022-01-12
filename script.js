@@ -35,8 +35,15 @@ const gameBoard = (function() {
 const gameEngine = (function() {
 
     const squareClicked = (position) => {
-        console.log(position)
+        let board = gameBoard.getBoard()
+        if (board[position] === '') {
+            gameBoard.addMarker(position,"X")
+        } else {
+            return
+        }
+        displayController.updateDisplay();
     }
+
     return {
         squareClicked,
     }
@@ -89,3 +96,4 @@ const displayController = (function() {
 //instasiation of game
 player1 = player("player1");
 player2 = player("player2");
+displayController.instantiateDisplay();
