@@ -53,7 +53,8 @@ const gameEngine = (function() {
 
     const checkBoard = () => {
         let board = gameBoard.getBoard()
-        
+
+        //check for victory
         if(board[0]===board[3] && board[3]===board[6] && board[6] === 'O' ||
            board[0]===board[3] && board[3]===board[6] && board[6] === 'X' ||
            board[1]===board[4] && board[4]===board[7] && board[7] === 'O' ||
@@ -71,16 +72,29 @@ const gameEngine = (function() {
            board[2]===board[4] && board[4]===board[6] && board[6] === 'O' ||
            board[2]===board[4] && board[4]===board[6] && board[6] === 'X' 
             ) {
-            endGame()
+            endGameVictory()
         }
+
+        //check for open squares, if none -> its a tie
+        for(let i=0; i< board.length;i++){
+            if(board[i]===''){
+                return;
+            }
+        }
+        endGameTie()
     }
 
-    const endGame = () => {
+    const endGameVictory = () => {
         if(playerOneTurn) {
             displayController.updateResult("O Won!")
         } else {
             displayController.updateResult("X Won!")
         }
+        displayController.disableDisplay();
+    }
+
+    const endGameTie = () => {
+        displayController.updateResult("Its a tie!")
         displayController.disableDisplay();
     }
 
