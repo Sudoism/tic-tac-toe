@@ -19,9 +19,9 @@ const gameBoard = (function() {
     }
 
     const cleanBoard = () => {
-        board = [null, null, null,
-            null, null, null,
-            null, null, null];
+        board = ['', '', '',
+                '', '', '',
+                '', '', ''];
     }
 
     return {
@@ -34,9 +34,13 @@ const gameBoard = (function() {
 //gameEngine module
 const gameEngine = (function() {
     let playerOneTurn = true;
+    let gameOver = false;
 
     const squareClicked = (position) => {
         let board = gameBoard.getBoard()
+        if(gameOver){
+            return;
+        }
         if (board[position] === '') {
             if(playerOneTurn) {
                 gameBoard.addMarker(position,"X")
@@ -55,24 +59,18 @@ const gameEngine = (function() {
         let board = gameBoard.getBoard()
 
         //check for victory
-        if(board[0]===board[3] && board[3]===board[6] && board[6] === 'O' ||
-           board[0]===board[3] && board[3]===board[6] && board[6] === 'X' ||
-           board[1]===board[4] && board[4]===board[7] && board[7] === 'O' ||
-           board[1]===board[4] && board[4]===board[7] && board[7] === 'X' ||
-           board[2]===board[5] && board[5]===board[8] && board[8] === 'O' ||
-           board[2]===board[5] && board[5]===board[8] && board[8] === 'X' ||
-           board[0]===board[1] && board[1]===board[2] && board[2] === 'O' ||
-           board[0]===board[1] && board[1]===board[2] && board[2] === 'X' ||
-           board[3]===board[4] && board[4]===board[5] && board[5] === 'O' ||
-           board[3]===board[4] && board[4]===board[5] && board[5] === 'X' ||
-           board[6]===board[7] && board[7]===board[8] && board[8] === 'O' ||
-           board[6]===board[7] && board[7]===board[8] && board[8] === 'X' ||
-           board[0]===board[4] && board[4]===board[8] && board[8] === 'O' ||
-           board[0]===board[4] && board[4]===board[8] && board[8] === 'X' ||
-           board[2]===board[4] && board[4]===board[6] && board[6] === 'O' ||
-           board[2]===board[4] && board[4]===board[6] && board[6] === 'X' 
-            ) {
+        if(
+            board[0]===board[3] && board[3]===board[6] && board[6] !== '' ||
+            board[1]===board[4] && board[4]===board[7] && board[7] !== '' ||
+            board[2]===board[5] && board[5]===board[8] && board[8] !== '' ||
+            board[0]===board[1] && board[1]===board[2] && board[2] !== '' ||
+            board[3]===board[4] && board[4]===board[5] && board[5] !== '' ||
+            board[6]===board[7] && board[7]===board[8] && board[8] !== '' ||
+            board[0]===board[4] && board[4]===board[8] && board[8] !== '' ||
+            board[2]===board[4] && board[4]===board[6] && board[6] !== ''
+            ){
             endGameVictory()
+            return;
         }
 
         //check for open squares, if none -> its a tie
@@ -86,25 +84,41 @@ const gameEngine = (function() {
 
     const endGameVictory = () => {
         if(playerOneTurn) {
-            displayController.updateResult("O Won!")
+            let playerTwo = displayController.getPlayerTwo()
+            displayController.updateResult(`${playerTwo} won!`)
         } else {
-            displayController.updateResult("X Won!")
+            let playerOne = displayController.getPlayerOne()
+            displayController.updateResult(`${playerOne} won!`)
         }
-        displayController.disableDisplay();
+        gameOver = true;
     }
 
     const endGameTie = () => {
         displayController.updateResult("Its a tie!")
-        displayController.disableDisplay();
+        gameOver = true;
     }
 
     const updateTurn = () => {
         playerOneTurn = !playerOneTurn;
     }
 
+    const restartGame = () => {
+        gameBoard.cleanBoard();
+        gameOver = false;
+        playerOneTurn = true;
+        displayController.updateResult("");
+        displayController.updateBoard()
+    }
+
+    const startGame = () => {
+        displayController.activateDisplay();
+    }
+
     return {
         squareClicked,
         checkBoard,
+        restartGame,
+        startGame,
     }
 })();
 
@@ -124,7 +138,9 @@ const displayController = (function() {
     squares.push(document.querySelector("#s8"));
 
     const result = document.querySelector("#result");
-
+    const restart = document.querySelector("#restart");
+    const playerOne = document.querySelector("#playerOne");
+    const playerTwo = document.querySelector("#playerTwo")
 
     const activateDisplay = () => {
         let board = gameBoard.getBoard();
@@ -134,17 +150,10 @@ const displayController = (function() {
             square.addEventListener("click", ()=> {
                 gameEngine.squareClicked(position);
             } )
-           //square.addEventListener("click", console.log("hi"), false)
         }
-    }
-
-    const disableDisplay = () => {
-        let board = gameBoard.getBoard();
-        for(let i = 0; i < board.length; i++) {
-            let square = squares[i]
-            let position = i;
-            square.replaceWith(square.cloneNode(true));
-        }
+        restart.addEventListener("click", ()=> {
+            gameEngine.restartGame();
+        })
     }
     
     const updateBoard = () => {
@@ -159,17 +168,24 @@ const displayController = (function() {
         result.textContent = resultInfo;
     }
 
+    const getPlayerOne = () => {
+        return playerOne.value
+    }
+
+    const getPlayerTwo = () => {
+        return playerTwo.value
+    }
+
     return {
         updateBoard,
         updateResult,
         activateDisplay,
-        disableDisplay
+        getPlayerOne,
+        getPlayerTwo,
     }
 
 })();
 
 
 //instasiation of game
-player1 = player("player1");
-player2 = player("player2");
-displayController.activateDisplay();
+gameEngine.startGame();
